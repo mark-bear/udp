@@ -25,22 +25,22 @@ def msg_sender(msg_array,ack_array):
     time_array=np.zeros_like(msg_array,dtype=float)
     segment_p=0
     swnd_p=0
-    #with tqdm(total=len(msg_array)) as pbar:
-    while(True):
-        #print(ack_array[:20])
-        #pbar.update(segment_p) 
-        if(segment_p==len(msg_array)):#发送完成
-            break
-        while ack_array[swnd_p]:#移动窗口
-            swnd_p+=1
-        if segment_p==swnd_p+SWND:
-            for _ in range(segment_p-SWND,segment_p):
-                if ack_array[_]==False and time.perf_counter()-time_array[_]>TIMEOUT:
-                    m_sender.sendto(str(msg_array[_]).encode("utf8"),(HOST,SERVER_RECEIVE_PORT))
-            continue
-        m_sender.sendto(str(msg_array[segment_p]).encode("utf8"),(HOST,SERVER_RECEIVE_PORT))
-        time_array[segment_p]=time.perf_counter()
-        segment_p+=1
+    with tqdm(total=len(msg_array)) as pbar:
+        while(True):
+            if(segment_p==len(msg_array)):#发送完成
+                pbar.update(SWND)
+                break
+            while ack_array[swnd_p]:#移动窗口
+                swnd_p+=1
+                pbar.update()
+            if segment_p==swnd_p+SWND:
+                for _ in range(segment_p-SWND,segment_p):
+                    if ack_array[_]==False and time.perf_counter()-time_array[_]>TIMEOUT:
+                        m_sender.sendto(str(msg_array[_]).encode("utf8"),(HOST,SERVER_RECEIVE_PORT))
+                continue
+            m_sender.sendto(str(msg_array[segment_p]).encode("utf8"),(HOST,SERVER_RECEIVE_PORT))
+            time_array[segment_p]=time.perf_counter()
+            segment_p+=1
 
 
 
