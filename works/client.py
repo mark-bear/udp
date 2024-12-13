@@ -29,6 +29,7 @@ def msg_sender(msg_array,ack_array):
         while(True):
             if(segment_p==len(msg_array)):#发送完成
                 pbar.update(SWND)
+                m_sender.close()
                 break
             while ack_array[swnd_p]:#移动窗口
                 swnd_p+=1
@@ -43,23 +44,16 @@ def msg_sender(msg_array,ack_array):
             segment_p+=1
 
 
-
-    m_sender.close()
-
 def ack_receiver(ack_array):
     #ack接收套接字
     ack_receiver=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     ack_receiver.bind((HOST,CLIENT_ACK_PORT))
-
-    wc_dog=time.perf_counter()
+    ack_receiver.settimeout(2*TIMEOUT)
     while(True):
         ack,addr=ack_receiver.recvfrom(1024)
         if ack:
             ack=int(ack.decode("utf8"))
             ack_array[ack]=True
-            wc_dog=time.perf_counter()
-        if time.perf_counter()-wc_dog>2*TIMEOUT:
-            break
 
 class senderThread(threading.Thread):
     def __init__(self,msg_array,ack_array):
@@ -80,7 +74,6 @@ class receiverThread(threading.Thread):
 if __name__=="__main__":
     msg_length=128
     massage=np.zeros([msg_length],dtype=int)
-    i=0
     for _ in range(len(massage)):
         massage[_]=_
     ack=np.zeros([msg_length],dtype=bool)
