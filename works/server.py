@@ -65,7 +65,7 @@ class acksendThread(threading.Thread):
 
 if __name__=="__main__":
     msg_queue=queue.Queue(MAX_DATA_LENGTH)
-    thread1=msgrecThread(msg_queue,0.03)
+    thread1=msgrecThread(msg_queue,0.01)
     thread2=acksendThread(msg_queue)
     thread1.start()
     thread2.start()

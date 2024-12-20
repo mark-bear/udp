@@ -1,0 +1,11 @@
+  0%|          | 0/128 [00:00<?, ?it/s] 16%|█▋        | 21/128 [00:00<00:00, 191.85it/s] 45%|████▍     | 57/128 [00:00<00:00, 281.16it/s] 67%|██████▋   | 86/128 [00:00<00:00, 280.22it/s] 91%|█████████ | 116/128 [00:00<00:00, 283.78it/s]100%|██████████| 128/128 [00:00<00:00, 293.29it/s]
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/home/xiongshihao/anaconda3/envs/test/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "/home/xiongshihao/code/zzz/udp/works/client.py", line 71, in run
+    ack_receiver(self.ack_array)
+  File "/home/xiongshihao/code/zzz/udp/works/client.py", line 53, in ack_receiver
+    ack,addr=ack_receiver.recvfrom(1024)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: timed out
