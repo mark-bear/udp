@@ -15,6 +15,7 @@ CLIENT_ACK_PORT=50003 #客户端接收ACK
 MAX_DATA_LENGTH=4194304 #最大报文长度4M
 SWND=8 #发送窗口
 TIMEOUT=2 #超时重传时间
+BANDWIDTH=64 #带宽
 
 def msg_receiver(rec_queue,p_drop):
     #接收发送端报文，存入rec_array，以概率p_drop丢包
@@ -22,18 +23,27 @@ def msg_receiver(rec_queue,p_drop):
     rec_socket.bind((HOST,SERVER_RECEIVE_PORT))
     rec_socket.settimeout(2*TIMEOUT)
     round_start=time.perf_counter()
-    pkg_num=0
+    pkg_num=0 #未被丢弃包数
+    pkg_recv=0 #收到包数
     while(True):
         round_end=time.perf_counter()
         time_gap=round_end-round_start
         if time_gap>=1:
-            print("speed:{}/s in {} seconds".format(pkg_num/time_gap,time_gap))
+            pkg_p_sec=pkg_num/time_gap
+            pkg_recv_p_sec=pkg_recv/time_gap
+            print("speed:{}/{} in {} seconds".format(pkg_p_sec,pkg_recv_p_sec,time_gap))
+            if pkg_recv_p_sec>BANDWIDTH:
+                p_drop=(pkg_recv_p_sec-BANDWIDTH)/pkg_recv_p_sec
+            else:
+                p_drop=0
             pkg_num=0
+            pkg_recv=0
             round_start=round_end
         msg,addr=rec_socket.recvfrom(1024)
         #print(msg.decode("utf8"),addr)
         msg=msg.decode("utf8")
         if msg:
+            pkg_recv+=1
             if random()>p_drop and not rec_queue.full():
                 rec_queue.put(msg)
                 pkg_num+=1

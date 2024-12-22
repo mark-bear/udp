@@ -73,7 +73,7 @@ class receiverThread(threading.Thread):
 
 
 if __name__=="__main__":
-    msg_length=1024
+    msg_length=256
     massage=np.zeros([msg_length],dtype=int)
     for _ in range(len(massage)):
         massage[_]=_
