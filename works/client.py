@@ -23,19 +23,20 @@ def msg_sender(msg_array,ack_array):
     m_sender.bind((HOST,CLIENT_SEND_PORT))
 
     time_array=np.zeros_like(msg_array,dtype=float)
+    swnd=SWND
     segment_p=0
     swnd_p=0
     with tqdm(total=len(msg_array)) as pbar:
         while(True):
             if(segment_p==len(msg_array)):#发送完成
-                pbar.update(SWND)
+                pbar.update(swnd)
                 m_sender.close()
                 break
             while ack_array[swnd_p]:#移动窗口
                 swnd_p+=1
                 pbar.update()
-            if segment_p==swnd_p+SWND:
-                for _ in range(segment_p-SWND,segment_p):
+            if segment_p==swnd_p+swnd:
+                for _ in range(segment_p-swnd,segment_p):
                     if ack_array[_]==False and time.perf_counter()-time_array[_]>TIMEOUT:
                         m_sender.sendto(str(msg_array[_]).encode("utf8"),(HOST,SERVER_RECEIVE_PORT))
                 continue
@@ -72,7 +73,7 @@ class receiverThread(threading.Thread):
 
 
 if __name__=="__main__":
-    msg_length=256
+    msg_length=1024
     massage=np.zeros([msg_length],dtype=int)
     for _ in range(len(massage)):
         massage[_]=_
