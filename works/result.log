@@ -1,15 +1,5 @@
-Exception in thread Thread-1:
-Traceback (most recent call last):
-  File "/home/xiongshihao/anaconda3/envs/test/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
-    self.run()
-  File "/home/xiongshihao/code/zzz/udp/works/server.py", line 56, in run
-    msg_receiver(self.rec_queue,self.p_drop)
-  File "/home/xiongshihao/code/zzz/udp/works/server.py", line 25, in msg_receiver
-    msg,addr=rec_socket.recvfrom(1024)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^
-TimeoutError: timed out
-ACK TIMEOUT CLOSE
-  0%|          | 0/128 [00:00<?, ?it/s] 16%|█▋        | 21/128 [00:00<00:00, 191.85it/s] 45%|████▍     | 57/128 [00:00<00:00, 281.16it/s] 67%|██████▋   | 86/128 [00:00<00:00, 280.22it/s] 91%|█████████ | 116/128 [00:00<00:00, 283.78it/s]100%|██████████| 128/128 [00:00<00:00, 293.29it/s]
+sended:
+  0%|          | 0/256 [00:00<?, ?it/s]  4%|▍         | 10/256 [00:00<00:02, 96.47it/s]  8%|▊         | 21/256 [00:00<00:02, 102.32it/s] 12%|█▎        | 32/256 [00:00<00:02, 101.80it/s] 17%|█▋        | 43/256 [00:00<00:02, 101.43it/s] 21%|██        | 54/256 [00:00<00:01, 101.33it/s] 25%|██▌       | 65/256 [00:00<00:01, 101.26it/s] 30%|██▉       | 76/256 [00:00<00:01, 101.31it/s] 34%|███▍      | 87/256 [00:00<00:01, 101.29it/s] 38%|███▊      | 98/256 [00:00<00:01, 99.67it/s]  43%|████▎     | 109/256 [00:01<00:01, 100.01it/s] 47%|████▋     | 120/256 [00:01<00:01, 99.13it/s]  51%|█████     | 131/256 [00:01<00:01, 99.85it/s] 55%|█████▌    | 142/256 [00:01<00:01, 100.32it/s] 60%|█████▉    | 153/256 [00:01<00:01, 100.63it/s] 64%|██████▍   | 165/256 [00:01<00:00, 105.07it/s] 71%|███████   | 182/256 [00:01<00:00, 120.67it/s] 76%|███████▌  | 195/256 [00:01<00:00, 120.19it/s] 81%|████████▏ | 208/256 [00:01<00:00, 115.10it/s] 86%|████████▌ | 220/256 [00:02<00:00, 110.63it/s] 91%|█████████ | 232/256 [00:02<00:00, 110.52it/s] 95%|█████████▌| 244/256 [00:02<00:00, 108.99it/s]100%|██████████| 256/256 [00:02<00:00, 109.89it/s]
 Exception in thread Thread-2:
 Traceback (most recent call last):
   File "/home/xiongshihao/anaconda3/envs/test/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
@@ -20,3 +10,17 @@ Traceback (most recent call last):
     ack,addr=ack_receiver.recvfrom(1024)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 TimeoutError: timed out
+received:
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/home/xiongshihao/anaconda3/envs/test/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "/home/xiongshihao/code/zzz/udp/works/server.py", line 65, in run
+    msg_receiver(self.rec_queue,self.p_drop)
+  File "/home/xiongshihao/code/zzz/udp/works/server.py", line 33, in msg_receiver
+    msg,addr=rec_socket.recvfrom(1024)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: timed out
+speed:40.6564195898534/s in 1.0084508280269802 seconds
+speed:100.95502493757202/s in 1.0103508969768882 seconds
+ACK TIMEOUT CLOSE

@@ -21,13 +21,22 @@ def msg_receiver(rec_queue,p_drop):
     rec_socket=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     rec_socket.bind((HOST,SERVER_RECEIVE_PORT))
     rec_socket.settimeout(2*TIMEOUT)
+    round_start=time.perf_counter()
+    pkg_num=0
     while(True):
+        round_end=time.perf_counter()
+        time_gap=round_end-round_start
+        if time_gap>=1:
+            print("speed:{}/s in {} seconds".format(pkg_num/time_gap,time_gap))
+            pkg_num=0
+            round_start=round_end
         msg,addr=rec_socket.recvfrom(1024)
         #print(msg.decode("utf8"),addr)
         msg=msg.decode("utf8")
         if msg:
             if random()>p_drop and not rec_queue.full():
                 rec_queue.put(msg)
+                pkg_num+=1
             continue
 
 def ack_sender(rec_queue):
@@ -65,7 +74,7 @@ class acksendThread(threading.Thread):
 
 if __name__=="__main__":
     msg_queue=queue.Queue(MAX_DATA_LENGTH)
-    thread1=msgrecThread(msg_queue,0.01)
+    thread1=msgrecThread(msg_queue,0)
     thread2=acksendThread(msg_queue)
     thread1.start()
     thread2.start()
