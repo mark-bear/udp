@@ -17,7 +17,7 @@ SWND=8 #发送窗口
 TIMEOUT=2 #超时重传时间
 BANDWIDTH=64 #带宽
 
-def msg_receiver(rec_queue,p_drop):
+def msg_receiver(rec_queue,drop):
     #接收发送端报文，存入rec_array，以概率p_drop丢包
     rec_socket=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     rec_socket.bind((HOST,SERVER_RECEIVE_PORT))
@@ -25,14 +25,15 @@ def msg_receiver(rec_queue,p_drop):
     round_start=time.perf_counter()
     pkg_num=0 #未被丢弃包数
     pkg_recv=0 #收到包数
+    p_drop=0
     while(True):
         round_end=time.perf_counter()
         time_gap=round_end-round_start
         if time_gap>=1:
             pkg_p_sec=pkg_num/time_gap
             pkg_recv_p_sec=pkg_recv/time_gap
-            print("speed:{}/{} in {} seconds".format(pkg_p_sec,pkg_recv_p_sec,time_gap))
-            if pkg_recv_p_sec>BANDWIDTH:
+            print("speed: {} / {} in {} seconds".format(pkg_p_sec,pkg_recv_p_sec,time_gap))
+            if drop and pkg_recv_p_sec>BANDWIDTH:
                 p_drop=(pkg_recv_p_sec-BANDWIDTH)/pkg_recv_p_sec
             else:
                 p_drop=0
@@ -40,7 +41,7 @@ def msg_receiver(rec_queue,p_drop):
             pkg_recv=0
             round_start=round_end
         msg,addr=rec_socket.recvfrom(1024)
-        #print(msg.decode("utf8"),addr)
+        print(msg.decode("utf8"),addr)
         msg=msg.decode("utf8")
         if msg:
             pkg_recv+=1
@@ -67,12 +68,12 @@ def ack_sender(rec_queue):
 
 
 class msgrecThread(threading.Thread):
-    def __init__(self,rec_queue,p_drop):
+    def __init__(self,rec_queue,drop):
         threading.Thread.__init__(self)
         self.rec_queue=rec_queue
-        self.p_drop=p_drop
+        self.drop=drop
     def run(self):
-        msg_receiver(self.rec_queue,self.p_drop)
+        msg_receiver(self.rec_queue,self.drop)
 
 class acksendThread(threading.Thread):
     def __init__(self,rec_queue):
@@ -84,7 +85,7 @@ class acksendThread(threading.Thread):
 
 if __name__=="__main__":
     msg_queue=queue.Queue(MAX_DATA_LENGTH)
-    thread1=msgrecThread(msg_queue,0)
+    thread1=msgrecThread(msg_queue,True)
     thread2=acksendThread(msg_queue)
     thread1.start()
     thread2.start()
